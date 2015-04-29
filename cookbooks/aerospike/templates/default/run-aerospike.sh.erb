@@ -1,0 +1,50 @@
+#!/bin/bash
+ulimit -n 100000
+
+set_shmall() {
+	mem=`/sbin/sysctl -n kernel.shmall`
+	min=4294967296
+	if [ ${#mem} -le ${#min} ]; then
+	    if [ $mem -lt $min ]; then
+		info "kernel.shmall too low, setting to 4G pages = 16TB"
+		/sbin/sysctl -w kernel.shmall=$min
+	    fi
+	fi
+}
+
+set_shmmax() {
+	mem=`/sbin/sysctl -n kernel.shmmax`
+	min=1073741824
+	if [ ${#mem} -le ${#min} ]; then
+	    if [ $mem -lt $min ]; then
+		info "kernel.shmmax too low, setting to 1GB"
+		/sbin/sysctl -w kernel.shmmax=$min
+	    fi
+	fi
+}
+
+function start()
+{
+	info "Starting Aerospike..."
+	mkdir -p /storage/data
+    set_shmall
+    set_shmmax
+	asd --config-file /storage/aerospike.conf --foreground & 
+	parent=$!
+}
+
+function stop()
+{
+	info "Stopping Aerospike"
+	kill -TERM $parent
+	wait $parent
+	exit_code=$?
+	info "Aerospike Stopped! Exit code was $exit_code"
+	exit $exit_code
+}
+
+trap stop TERM INT
+
+start
+info "Aerospike is good to go."
+wait $parent

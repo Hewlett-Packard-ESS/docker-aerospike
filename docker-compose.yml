@@ -1,0 +1,55 @@
+redis1:
+  image: hpess/redis:master
+  restart: 'always'
+  privileged: true
+  hostname: redis1
+
+redis2:
+  image: hpess/redis:master
+  restart: 'always'
+  privileged: true
+  hostname: redis2
+  environment:
+    redis_slaveof: 'redis1'
+  links:
+    - 'redis1'
+  
+redis3:
+  image: hpess/redis:master
+  restart: 'always'
+  privileged: true
+  hostname: redis3
+  environment:
+    redis_slaveof: 'redis1'
+  links:
+    - 'redis1'
+
+sentinel1:
+  image: hpess/redis:master
+  restart: 'always'
+  privileged: true
+  hostname: sentinel1
+  environment:
+    master_name: 'redis1'
+  links:
+    - 'redis1'
+
+sentinel2:
+  image: hpess/redis:master
+  restart: 'always'
+  privileged: true
+  hostname: sentinel2
+  environment:
+    master_name: 'redis1'
+  links:
+    - 'redis1'
+
+sentinel3:
+  image: hpess/redis:master
+  restart: 'always'
+  privileged: true
+  hostname: sentinel3
+  environment:
+    master_name: 'redis1'
+  links:
+    - 'redis1'
