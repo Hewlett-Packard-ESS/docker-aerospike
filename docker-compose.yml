@@ -1,0 +1,7 @@
+aerospike:
+  hostname: aerospike
+  image: hpess/aerospike:master
+  restart: always
+  environment:
+    as_namespace: 'docker'
+    as_ttl: '30d'
