@@ -1,7 +1,5 @@
 FROM hpess/chef:master
 MAINTAINER Karl Stoney <karl.stoney@hp.com>
-ENV http_proxy http://proxy.sdc.hp.com:8080
-ENV https_proxy http://proxy.sdc.hp.com:8080
 
 # Download Aerospike
 RUN cd /tmp && \
